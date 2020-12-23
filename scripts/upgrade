@@ -95,6 +95,15 @@ ynh_script_progression --message="Upgrading dependencies..." --time --weight=1
 
 #TODO: remove buster-backports kernel
 
+# Downgrade linux-image-$arch if updated to the buster-backports version
+arch=$(ynh_detect_arch)
+linuximage_version=$(ynh_package_version --package=linux-image-$arch)
+if [[ $linuximage_version == *"bpo10"* ]]
+then
+	ynh_package_remove linux-image-$arch
+	ynh_package_install linux-image-$arch
+fi
+
 #Add buster-backports repo
 ynh_add_repo --uri="http://deb.debian.org/debian" --suite="buster-backports" --component="main" --name="$app"
 
